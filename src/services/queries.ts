@@ -1,6 +1,20 @@
-import { gql } from "@apollo/client";
+import { gql, TypedDocumentNode } from "@apollo/client";
 
-export const GET_CONTACT_LIST = gql`
+interface ContactListInterface {
+	contact: {
+		__typename: string;
+		created_at: string;
+		first_name: string;
+		id: number;
+		last_name: string;
+		phones: 
+			{
+				__typename: string;
+				number: string;
+			}[]
+	}[]
+}
+export const GET_CONTACT_LIST:TypedDocumentNode<ContactListInterface> = gql`
   query GetContactList(
     $distinct_on: [contact_select_column!]
     $limit: Int
