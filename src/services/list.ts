@@ -1,6 +1,6 @@
 import { gql, TypedDocumentNode } from "@apollo/client";
 
-interface ContactListInterface {
+export interface ContactListInterface {
   contact: Array<ContactDetailType & { phones: PhoneNumberType[]}>
 }
 
