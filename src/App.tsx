@@ -4,9 +4,12 @@ import { GET_CONTACT_LIST, GET_PHONE_LIST } from "./services/list";
 import SectionHeader from "./components/SectionHeader";
 import PageContainer from "./components/PageContainer";
 import Contact from "./components/Contact";
+import Autocomplete from "./components/Autocomplete";
+import { ReactComponent as AddIcon } from "./assets/add_icon.svg";
 
 function App() {
   const { loading, error, data } = useQuery(GET_CONTACT_LIST);
+  const [autocompleteInputValue, setAutocompleteInputValue] = useState("");
 
   console.log(data?.contact);
   return (
@@ -16,11 +19,23 @@ function App() {
         <p>Error!</p>
       ) : (
         <PageContainer>
-          <SectionHeader>Favorites</SectionHeader>
-					{data?.contact.map((contact) => (
-						<Contact contact={contact} key={contact.id} />
-					))}
-          <SectionHeader>Contact List</SectionHeader>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <Autocomplete
+              options={data?.contact!}
+              optionLabel="first_name"
+              inputValue={autocompleteInputValue}
+            />
+            <AddIcon />
+          </div>
+          <section>
+            <SectionHeader>Favorites</SectionHeader>
+          </section>
+          <section>
+            <SectionHeader>Contact List</SectionHeader>
+            {data?.contact.map((contact) => (
+              <Contact contact={contact} key={contact.id} />
+            ))}
+          </section>
         </PageContainer>
       )}
     </div>
