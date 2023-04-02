@@ -6,6 +6,7 @@ import PageContainer from "./components/PageContainer";
 import Contact from "./components/Contact";
 import Autocomplete from "./components/Autocomplete";
 import { ReactComponent as AddIcon } from "./assets/add_icon.svg";
+import Pagination from "./components/Pagination";
 
 function App() {
   const { loading, error, data } = useQuery(GET_CONTACT_LIST);
@@ -35,6 +36,7 @@ function App() {
             {data?.contact.map((contact) => (
               <Contact contact={contact} key={contact.id} />
             ))}
+						<Pagination />
           </section>
         </PageContainer>
       )}
