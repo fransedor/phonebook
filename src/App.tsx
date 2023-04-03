@@ -1,6 +1,12 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_CONTACT_LIST, GET_PHONE_LIST } from "./services/list";
+import {
+  ContactDetailType,
+  ContactListInterface,
+  GET_CONTACT_LIST,
+  GET_PHONE_LIST,
+  PhoneNumberType,
+} from "./services/list";
 import SectionHeader from "./components/SectionHeader";
 import PageContainer from "./components/PageContainer";
 import Contact from "./components/Contact";
@@ -11,18 +17,41 @@ import Pagination from "./components/Pagination";
 function App() {
   const { loading, error, data } = useQuery(GET_CONTACT_LIST);
   const [autocompleteInputValue, setAutocompleteInputValue] = useState("");
-	const [pageIndex, setPageIndex] = useState(0);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [favoriteList, setFavoriteList] = useState<ContactListInterface[]>([]);
+  const [contactList, setContactList] = useState<ContactListInterface[]>([]);
 
-	const renderedContactList = useCallback(() => {
-		if (data) {
-			return data.contact.slice(pageIndex * 5, (pageIndex + 1) * 5);
-		}
-		return []
-	}, [data, pageIndex])
+  const renderedContactList = useCallback(() => {
+    if (data) {
+      return data.contact.slice(pageIndex * 5, (pageIndex + 1) * 5);
+    }
+    return [];
+  }, [data, pageIndex]);
 
-	const pageClickHandler = (pageNumber: number) => {
-		setPageIndex(pageNumber - 1);
-	}
+  useEffect(() => {
+    if (data) {
+      setContactList(data.contact);
+    }
+  }, [data]);
+
+  const favoriteHandler = useCallback(
+    (contact: ContactListInterface) => {
+      const currFavList = [...favoriteList];
+      const isContactFavorite = currFavList.find((currFav) => currFav.id === contact.id);
+      if (isContactFavorite) {
+        setFavoriteList(currFavList.filter((currFav) => currFav.id !== contact.id));
+        setContactList([...contactList, contact]);
+      } else {
+        setFavoriteList([...currFavList, contact]);
+        setContactList(contactList.filter((currContact) => currContact.id !== contact.id));
+      }
+    },
+    [favoriteList, contactList]
+  );
+
+  const pageClickHandler = (pageNumber: number) => {
+    setPageIndex(pageNumber - 1);
+  };
   console.log(data?.contact);
   return (
     <div className="App">
@@ -40,17 +69,25 @@ function App() {
           </div>
           <section>
             <SectionHeader>Favorites</SectionHeader>
+            {favoriteList.map((favContact) => (
+              <Contact
+                contact={favContact}
+                key={favContact.id}
+                onFavorite={favoriteHandler}
+								isFavorite
+              />
+            ))}
           </section>
           <section>
             <SectionHeader>Contact List</SectionHeader>
-            {renderedContactList().map((contact) => (
-              <Contact contact={contact} key={contact.id} />
+            {contactList.slice(pageIndex * 5, (pageIndex + 1) * 5).map((contact) => (
+              <Contact contact={contact} key={contact.id} onFavorite={favoriteHandler} />
             ))}
             <Pagination
               totalPages={data.contact.length / 5}
               onBefore={() => {}}
               onNext={() => {}}
-							onClickPage={pageClickHandler}
+              onClickPage={pageClickHandler}
             />
           </section>
         </PageContainer>

@@ -11,6 +11,11 @@ export const ContactInfo = styled.div`
 	flex-direction: column;
 `
 
+export const PhoneNumber = styled.span`
+	color: #444;
+	font-size: 12px;
+`
+
 export const ContactActionContainer = styled.div`
 	display: flex;
 	gap: 8px;

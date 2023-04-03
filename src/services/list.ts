@@ -1,7 +1,9 @@
 import { gql, TypedDocumentNode } from "@apollo/client";
 
-export interface ContactListInterface {
-  contact: Array<ContactDetailType & { phones: PhoneNumberType[]}>
+export type ContactListInterface = ContactDetailType & { phones: PhoneNumberType[] };
+
+export interface GetContactListResponse {
+  contact: ContactListInterface[]
 }
 
 export type PhoneNumberType = {
@@ -14,22 +16,23 @@ export type ContactDetailType = {
   first_name: string;
   id: number;
   last_name: string;
-	updated_at?: string;
-}
+  updated_at?: string;
+  isFavorite?: boolean;
+};
 
 type GetPhoneListResponse = {
-	phone : Array<{ contact: ContactDetailType} & PhoneNumberType>
-}
+  phone: Array<{ contact: ContactDetailType } & PhoneNumberType>;
+};
 
 interface ContactListVariables {
-	limit?: number;
-	offset?: number;
-	order_by?: any;
-	distinct_on?: any;
-	where?: any;
+  limit?: number;
+  offset?: number;
+  order_by?: any;
+  distinct_on?: any;
+  where?: any;
 }
 
-export const GET_CONTACT_LIST: TypedDocumentNode<ContactListInterface, ContactListVariables> = gql`
+export const GET_CONTACT_LIST: TypedDocumentNode<GetContactListResponse, ContactListVariables> = gql`
   query GetContactList(
     $distinct_on: [contact_select_column!]
     $limit: Int
@@ -55,7 +58,7 @@ export const GET_CONTACT_LIST: TypedDocumentNode<ContactListInterface, ContactLi
   }
 `;
 
-export const GET_PHONE_LIST:TypedDocumentNode<GetPhoneListResponse, ContactListVariables> = gql`
+export const GET_PHONE_LIST: TypedDocumentNode<GetPhoneListResponse, ContactListVariables> = gql`
   query GetPhoneList(
     $where: phone_bool_exp
     $distinct_on: [phone_select_column!]
