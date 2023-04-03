@@ -22,8 +22,9 @@ export const DialogContent = styled.div`
 	padding: 24px;
 	border-radius: 1rem;
 	@media screen and (max-width: 600px) {
+		border-radius: 1rem 1rem 0 0;
 		width: 100vw;
-		height: 50vh;
+		height: 60vh;
 	}
 `
 

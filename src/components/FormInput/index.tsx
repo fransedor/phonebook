@@ -2,17 +2,29 @@ import React from "react";
 import InputContainer, { StyledInput } from "./index.styles";
 
 interface FormInputProps {
-  id: string;
   label?: string;
-  value: string;
+  name?: string;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  pattern?: string;
+	patternMessage?: string;
 }
-const FormInput: React.FC<FormInputProps> = ({ id, label, value }) => {
-  return (
-    <InputContainer>
-      {label && <label htmlFor={id}>{label}</label>}
-      <StyledInput type="text" id={id} />
-    </InputContainer>
-  );
-};
+const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
+  ({ name, label, onChange, pattern, patternMessage }, ref) => {
+    return (
+      <InputContainer>
+        {label && <label htmlFor={name}>{label}</label>}
+        <StyledInput
+          type="text"
+          id={name}
+          name={name}
+          onChange={onChange}
+          ref={ref}
+					title={patternMessage}
+          pattern={pattern}
+        />
+      </InputContainer>
+    );
+  }
+);
 
 export default FormInput;

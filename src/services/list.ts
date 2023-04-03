@@ -17,7 +17,6 @@ export type ContactDetailType = {
   id: number;
   last_name: string;
   updated_at?: string;
-  isFavorite?: boolean;
 };
 
 type GetPhoneListResponse = {

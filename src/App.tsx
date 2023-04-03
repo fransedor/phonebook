@@ -91,7 +91,7 @@ function App() {
               onClickPage={pageClickHandler}
             />
           </section>
-					<CreateEditContactDialog open={true}></CreateEditContactDialog>
+					<CreateEditContactDialog open={true} contactList={contactList} setContactList={setContactList}></CreateEditContactDialog>
         </PageContainer>
       )}
     </div>
