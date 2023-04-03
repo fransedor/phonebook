@@ -13,6 +13,7 @@ import Contact from "./components/Contact";
 import Autocomplete from "./components/Autocomplete";
 import { ReactComponent as AddIcon } from "./assets/add_icon.svg";
 import Pagination from "./components/Pagination";
+import CreateEditContactDialog from "./components/CreateEditContactDialog";
 
 function App() {
   const { loading, error, data } = useQuery(GET_CONTACT_LIST);
@@ -90,6 +91,7 @@ function App() {
               onClickPage={pageClickHandler}
             />
           </section>
+					<CreateEditContactDialog open={true}></CreateEditContactDialog>
         </PageContainer>
       )}
     </div>

@@ -22,7 +22,7 @@ const Contact: React.FC<ContactProps> = ({ contact, onFavorite, isFavorite }) =>
         <p>{`${contact.first_name} ${contact.last_name}`}</p>
 				<div>
 					{contact.phones.map((phone, index) => (
-						<PhoneNumber>{phone.number} {index === contact.phones.length - 1 ? "" : "\u2022 "}</PhoneNumber>
+						<PhoneNumber key={phone.number}>{phone.number} {index === contact.phones.length - 1 ? "" : "\u2022 "}</PhoneNumber>
 					))}
 				</div>
       </ContactInfo>
