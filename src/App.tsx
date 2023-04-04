@@ -4,10 +4,10 @@ import { ContactListInterface, GET_CONTACT_LIST } from "./services/list";
 import SectionHeader from "./components/SectionHeader";
 import PageContainer from "./components/PageContainer";
 import Contact from "./components/Contact";
-import { ReactComponent as AddIcon } from "./assets/add_icon.svg";
 import Pagination from "./components/Pagination";
 import CreateEditContactDialog from "./components/CreateEditContactDialog";
 import { DELETE_CONTACT_BY_ID } from "./services/delete";
+import PageHeader from "./components/PageHeader";
 
 function App() {
   const localStorageContacts = localStorage.getItem("contacts");
@@ -86,15 +86,7 @@ function App() {
       {error && <p>Error!</p>}
       {data && (
         <PageContainer>
-          <div style={{ display: "flex", gap: "8px" }}>
-            <input
-              type="text"
-              aria-label="search-contacts"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-            />
-            <AddIcon onClick={() => setOpenCreateContactDialog(true)} />
-          </div>
+          <PageHeader searchValue={searchValue} setSearchValue={setSearchValue} />
           <section>
             <SectionHeader>Favorites</SectionHeader>
             {renderFavoriteList().map((favContact) => (
@@ -131,11 +123,6 @@ function App() {
               currentPageIndex={pageIndex}
             />
           </section>
-          <CreateEditContactDialog
-            open={openCreateContactDialog}
-            onClose={() => setOpenCreateContactDialog(false)}
-            refetch={refetch}
-          />
         </PageContainer>
       )}
     </div>
