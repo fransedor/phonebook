@@ -120,10 +120,15 @@ function App() {
               />
             ))}
             <Pagination
-              totalPages={(data.contact.length - favoriteList.length) / 10}
-              onBefore={() => {}}
-              onNext={() => {}}
+              totalPages={Math.ceil((data.contact.length - favoriteList.length) / 10)}
+              onBefore={() => {
+                setPageIndex(pageIndex - 1);
+              }}
+              onNext={() => {
+                setPageIndex(pageIndex + 1);
+              }}
               onClickPage={pageClickHandler}
+              currentPageIndex={pageIndex}
             />
           </section>
           <CreateEditContactDialog
