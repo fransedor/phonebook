@@ -19,10 +19,6 @@ export type ContactDetailType = {
   updated_at?: string;
 };
 
-type GetPhoneListResponse = {
-  phone: Array<{ contact: ContactDetailType } & PhoneNumberType>;
-};
-
 export interface ContactListVariables {
   limit?: number;
   offset?: number;
@@ -57,27 +53,3 @@ export const GET_CONTACT_LIST: TypedDocumentNode<GetContactListResponse, Contact
   }
 `;
 
-export const GET_PHONE_LIST: TypedDocumentNode<GetPhoneListResponse, ContactListVariables> = gql`
-  query GetPhoneList(
-    $where: phone_bool_exp
-    $distinct_on: [phone_select_column!]
-    $limit: Int = 10
-    $offset: Int = 0
-    $order_by: [phone_order_by!]
-  ) {
-    phone(
-      where: $where
-      distinct_on: $distinct_on
-      limit: $limit
-      offset: $offset
-      order_by: $order_by
-    ) {
-      contact {
-        last_name
-        first_name
-        id
-      }
-      number
-    }
-  }
-`;

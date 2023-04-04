@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Dialog, { DialogContent, DialogHeader } from "./index.styles";
 import {
   ContactListInterface,
@@ -8,7 +8,7 @@ import {
 } from "../../services/list";
 import { ReactComponent as CloseIcon } from "../../assets/close_icon.svg";
 import FormInput from "../FormInput";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { ApolloQueryResult, useMutation } from "@apollo/client";
 import { EDIT_CONTACT_BY_ID } from "../../services/edit";
 import { ADD_CONTACT_WITH_PHONES } from "../../services/create";

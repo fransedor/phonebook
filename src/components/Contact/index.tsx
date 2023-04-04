@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import ContactContainer, { ContactActionContainer, ContactInfo, PhoneNumber } from "./index.styles";
-import { ReactComponent as PersonIcon } from "../../assets/person_icon.svg";
 import { ReactComponent as HeartPlusIcon } from "../../assets/heart_plus_icon.svg";
 import { ReactComponent as HeartMinusIcon } from "../../assets/heart_minus_icon.svg";
 import { ReactComponent as DeleteIcon } from "../../assets/delete_icon.svg";

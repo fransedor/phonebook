@@ -1,43 +1,42 @@
 import { useCallback, useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import {
-  ContactDetailType,
-  ContactListInterface,
-  GET_CONTACT_LIST,
-  GET_PHONE_LIST,
-  PhoneNumberType,
-} from "./services/list";
+import { ContactListInterface, GET_CONTACT_LIST } from "./services/list";
 import SectionHeader from "./components/SectionHeader";
 import PageContainer from "./components/PageContainer";
 import Contact from "./components/Contact";
-import Autocomplete from "./components/Autocomplete";
 import { ReactComponent as AddIcon } from "./assets/add_icon.svg";
 import Pagination from "./components/Pagination";
 import CreateEditContactDialog from "./components/CreateEditContactDialog";
 import { DELETE_CONTACT_BY_ID } from "./services/delete";
 
 function App() {
+  const localStorageFavorites = localStorage.getItem("favorites");
+  const localStorageContacts = localStorage.getItem("contacts");
   const { loading, error, data, refetch } = useQuery(GET_CONTACT_LIST);
-	const [deleteContactById] = useMutation(DELETE_CONTACT_BY_ID);
-  const [autocompleteInputValue, setAutocompleteInputValue] = useState("");
+  const [deleteContactById] = useMutation(DELETE_CONTACT_BY_ID);
+  const [searchValue, setSearchValue] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
-  const [favoriteList, setFavoriteList] = useState<ContactListInterface[]>([]);
-  const [contactList, setContactList] = useState<ContactListInterface[]>([]);
+  const [favoriteList, setFavoriteList] = useState<ContactListInterface[]>(
+    localStorageFavorites ? JSON.parse(localStorageFavorites) : []
+  );
+  const [contactList, setContactList] = useState<ContactListInterface[]>(
+    localStorageContacts ? JSON.parse(localStorageContacts) : []
+  );
   const [openCreateContactDialog, setOpenCreateContactDialog] = useState(false);
-
-  const renderedContactList = useCallback(() => {
-    if (data) {
-      return data.contact.slice(pageIndex * 5, (pageIndex + 1) * 5);
-    }
-    return [];
-  }, [data, pageIndex]);
-
 
   useEffect(() => {
     if (data) {
       setContactList(data.contact);
     }
   }, [data]);
+
+  useEffect(() => {
+      localStorage.setItem("favorites", JSON.stringify(favoriteList));
+  }, [favoriteList]);
+
+	useEffect(() => {
+		localStorage.setItem("contacts", JSON.stringify(contactList));
+	}, [contactList])
 
   const favoriteHandler = useCallback(
     (contact: ContactListInterface) => {
@@ -54,9 +53,9 @@ function App() {
     [favoriteList, contactList]
   );
 
-	const deleteHandler = (id: number) => {
-		deleteContactById({ variables: { id }, onCompleted: () => refetch() })
-	}
+  const deleteHandler = (id: number) => {
+    deleteContactById({ variables: { id }, onCompleted: () => refetch() });
+  };
 
   const pageClickHandler = (pageNumber: number) => {
     setPageIndex(pageNumber - 1);
@@ -68,10 +67,10 @@ function App() {
       {data && (
         <PageContainer>
           <div style={{ display: "flex", gap: "8px" }}>
-            <Autocomplete
-              options={data?.contact!}
-              optionLabel="first_name"
-              inputValue={autocompleteInputValue}
+            <input
+              type="text"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
             />
             <AddIcon onClick={() => setOpenCreateContactDialog(true)} />
           </div>
@@ -82,9 +81,9 @@ function App() {
                 refetch={refetch}
                 contact={favContact}
                 key={favContact.id}
-								onDelete={deleteHandler}
+                onDelete={deleteHandler}
                 onFavorite={favoriteHandler}
-								isFavorite
+                isFavorite
               />
             ))}
           </section>
@@ -95,7 +94,7 @@ function App() {
                 contact={contact}
                 key={contact.id}
                 onFavorite={favoriteHandler}
-								onDelete={deleteHandler}
+                onDelete={deleteHandler}
                 refetch={refetch}
               />
             ))}
