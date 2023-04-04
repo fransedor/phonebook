@@ -1,5 +1,5 @@
 import { gql, TypedDocumentNode } from "@apollo/client";
-import { ContactDetailType, PhoneNumberType } from "./list";
+import { ContactDetailType, ContactListInterface, PhoneNumberType } from "./list";
 
 interface EditContactByIdVariables {
   id: number;
@@ -7,7 +7,7 @@ interface EditContactByIdVariables {
 }
 
 interface EditContactByIdResponse {
-  update_contact_by_pk: ContactDetailType & { phones: PhoneNumberType[] };
+  update_contact_by_pk: ContactListInterface;
 }
 
 export const EDIT_CONTACT_BY_ID: TypedDocumentNode<

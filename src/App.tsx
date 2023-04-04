@@ -16,11 +16,12 @@ import Pagination from "./components/Pagination";
 import CreateEditContactDialog from "./components/CreateEditContactDialog";
 
 function App() {
-  const { loading, error, data } = useQuery(GET_CONTACT_LIST);
+  const { loading, error, data, refetch } = useQuery(GET_CONTACT_LIST);
   const [autocompleteInputValue, setAutocompleteInputValue] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const [favoriteList, setFavoriteList] = useState<ContactListInterface[]>([]);
   const [contactList, setContactList] = useState<ContactListInterface[]>([]);
+  const [openCreateContactDialog, setOpenCreateContactDialog] = useState(false);
 
   const renderedContactList = useCallback(() => {
     if (data) {
@@ -28,6 +29,8 @@ function App() {
     }
     return [];
   }, [data, pageIndex]);
+
+  console.log(data?.contact);
 
   useEffect(() => {
     if (data) {
@@ -53,7 +56,6 @@ function App() {
   const pageClickHandler = (pageNumber: number) => {
     setPageIndex(pageNumber - 1);
   };
-  console.log(data?.contact);
   return (
     <div className="App">
       {loading && <p>Loading...</p>}
@@ -66,23 +68,29 @@ function App() {
               optionLabel="first_name"
               inputValue={autocompleteInputValue}
             />
-            <AddIcon />
+            <AddIcon onClick={() => setOpenCreateContactDialog(true)} />
           </div>
           <section>
             <SectionHeader>Favorites</SectionHeader>
             {favoriteList.map((favContact) => (
               <Contact
+                refetch={refetch}
                 contact={favContact}
                 key={favContact.id}
                 onFavorite={favoriteHandler}
-								isFavorite
+                isFavorite
               />
             ))}
           </section>
           <section>
             <SectionHeader>Contact List</SectionHeader>
             {contactList.slice(pageIndex * 5, (pageIndex + 1) * 5).map((contact) => (
-              <Contact contact={contact} key={contact.id} onFavorite={favoriteHandler} />
+              <Contact
+                contact={contact}
+                key={contact.id}
+                onFavorite={favoriteHandler}
+                refetch={refetch}
+              />
             ))}
             <Pagination
               totalPages={data.contact.length / 5}
@@ -91,7 +99,11 @@ function App() {
               onClickPage={pageClickHandler}
             />
           </section>
-					<CreateEditContactDialog open={true} contactList={contactList} setContactList={setContactList}></CreateEditContactDialog>
+          <CreateEditContactDialog
+            open={openCreateContactDialog}
+            onClose={() => setOpenCreateContactDialog(false)}
+            refetch={refetch}
+          />
         </PageContainer>
       )}
     </div>

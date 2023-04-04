@@ -23,7 +23,7 @@ type GetPhoneListResponse = {
   phone: Array<{ contact: ContactDetailType } & PhoneNumberType>;
 };
 
-interface ContactListVariables {
+export interface ContactListVariables {
   limit?: number;
   offset?: number;
   order_by?: any;
