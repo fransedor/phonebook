@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { TypedDocumentNode, gql } from "@apollo/client";
 
 interface DeleteContactByIdVariable {
 	id: number
@@ -11,7 +11,7 @@ interface DeleteContactByIdResponse {
 		id: number;
 	}
 }
-export const DELETE_CONTACT_BY_ID = gql`
+export const DELETE_CONTACT_BY_ID:TypedDocumentNode<DeleteContactByIdResponse, DeleteContactByIdVariable> = gql`
   mutation DeleteContactById($id: Int!) {
     delete_contact_by_pk(id: $id) {
       first_name

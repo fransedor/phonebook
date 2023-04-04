@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   ContactDetailType,
   ContactListInterface,
@@ -14,9 +14,11 @@ import Autocomplete from "./components/Autocomplete";
 import { ReactComponent as AddIcon } from "./assets/add_icon.svg";
 import Pagination from "./components/Pagination";
 import CreateEditContactDialog from "./components/CreateEditContactDialog";
+import { DELETE_CONTACT_BY_ID } from "./services/delete";
 
 function App() {
   const { loading, error, data, refetch } = useQuery(GET_CONTACT_LIST);
+	const [deleteContactById] = useMutation(DELETE_CONTACT_BY_ID);
   const [autocompleteInputValue, setAutocompleteInputValue] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const [favoriteList, setFavoriteList] = useState<ContactListInterface[]>([]);
@@ -30,7 +32,6 @@ function App() {
     return [];
   }, [data, pageIndex]);
 
-  console.log(data?.contact);
 
   useEffect(() => {
     if (data) {
@@ -52,6 +53,10 @@ function App() {
     },
     [favoriteList, contactList]
   );
+
+	const deleteHandler = (id: number) => {
+		deleteContactById({ variables: { id }, onCompleted: () => refetch() })
+	}
 
   const pageClickHandler = (pageNumber: number) => {
     setPageIndex(pageNumber - 1);
@@ -77,23 +82,25 @@ function App() {
                 refetch={refetch}
                 contact={favContact}
                 key={favContact.id}
+								onDelete={deleteHandler}
                 onFavorite={favoriteHandler}
-                isFavorite
+								isFavorite
               />
             ))}
           </section>
           <section>
             <SectionHeader>Contact List</SectionHeader>
-            {contactList.slice(pageIndex * 5, (pageIndex + 1) * 5).map((contact) => (
+            {contactList.slice(pageIndex * 10, (pageIndex + 1) * 10).map((contact) => (
               <Contact
                 contact={contact}
                 key={contact.id}
                 onFavorite={favoriteHandler}
+								onDelete={deleteHandler}
                 refetch={refetch}
               />
             ))}
             <Pagination
-              totalPages={data.contact.length / 5}
+              totalPages={data.contact.length / 10}
               onBefore={() => {}}
               onNext={() => {}}
               onClickPage={pageClickHandler}

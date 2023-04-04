@@ -18,13 +18,13 @@ interface ContactProps {
   contact: ContactDetailType & { phones: PhoneNumberType[] };
   onFavorite: (contact: ContactDetailType & { phones: PhoneNumberType[] }) => void;
   onEdit?: VoidFunction;
-  onDelete?: VoidFunction;
+  onDelete: (contactId: number) => void;
   isFavorite?: boolean;
   refetch: (
     variables?: Partial<ContactListVariables> | undefined
   ) => Promise<ApolloQueryResult<GetContactListResponse>>;
 }
-const Contact: React.FC<ContactProps> = ({ contact, onFavorite, isFavorite, refetch }) => {
+const Contact: React.FC<ContactProps> = ({ contact, onFavorite, isFavorite, refetch, onDelete }) => {
   const [openEditContactDialog, setOpenEditContactDialog] = useState(false);
 
   return (
@@ -48,7 +48,7 @@ const Contact: React.FC<ContactProps> = ({ contact, onFavorite, isFavorite, refe
           ) : (
             <HeartPlusIcon width={16} onClick={() => onFavorite(contact)} />
           )}
-          <DeleteIcon width={16} />
+          <DeleteIcon width={16} onClick={() => onDelete(contact.id)}/>
         </ContactActionContainer>
       </ContactContainer>
       <CreateEditContactDialog
