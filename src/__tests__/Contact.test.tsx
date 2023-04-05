@@ -21,7 +21,7 @@ const renderContact = (props?: Partial<ContactProps>) => {
 	render(
 		<MockedProvider mocks={contactProviderMocks} addTypename={false}>
 			<Contact
-				contact={mockContact}
+				contact={mockContactWithMultiPhoneNumber}
 				onDelete={jest.fn()}
 				onEdit={jest.fn()}
 				onFavorite={jest.fn()}
@@ -36,7 +36,7 @@ describe("Contact", () => {
 		renderContact()
     expect(screen.getByTestId("contact-container")).toBeInTheDocument();
     expect(screen.getByText("master", { exact: false })).toBeInTheDocument();
-    expect(screen.getByText("020")).toBeInTheDocument();
+    expect(screen.getByText("020", { exact: false })).toBeInTheDocument();
     expect(screen.getByTestId("edit-contact")).toBeInTheDocument();
     expect(screen.getByTestId("fav-contact")).toBeInTheDocument();
     expect(screen.getByTestId("delete-contact")).toBeInTheDocument();
@@ -45,7 +45,7 @@ describe("Contact", () => {
 		renderContact({ isFavorite: true })
     expect(screen.getByTestId("contact-container")).toBeInTheDocument();
     expect(screen.getByText("master", { exact: false })).toBeInTheDocument();
-    expect(screen.getByText("020")).toBeInTheDocument();
+    expect(screen.getByText("020", { exact: false })).toBeInTheDocument();
     expect(screen.getByTestId("edit-contact")).toBeInTheDocument();
     expect(screen.getByTestId("unfav-contact")).toBeInTheDocument();
     expect(screen.getByTestId("delete-contact")).toBeInTheDocument();

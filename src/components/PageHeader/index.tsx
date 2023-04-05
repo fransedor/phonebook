@@ -20,6 +20,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ searchValue, setSearchValue }) 
           type="text"
           aria-label="search-contacts"
           name="search-contacts"
+					data-testid="search-contacts"
           placeholder="Search contact name..."
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}

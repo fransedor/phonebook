@@ -1,3 +1,4 @@
+import { DELETE_CONTACT_BY_ID } from "../services/delete";
 import { GET_CONTACT_LIST } from "../services/list";
 
 const mockContact = {
@@ -34,6 +35,33 @@ export const mockContactWithMultiPhoneNumber = {
 
 export const contactProviderMocks = [
   {
+    request: {
+      query: GET_CONTACT_LIST,
+    },
+    result: {
+      data: {
+        contact: [mockContactWithMultiPhoneNumber]
+      }
+    }
+  },
+  {
+    request: {
+      query: DELETE_CONTACT_BY_ID,
+			variables: {
+				id: 2659
+			}
+    },
+    result: {
+      data: {
+        delete_contact_by_pk: {
+					first_name: "Hello",
+					last_name: "Hello",
+					id: 1
+				}
+      }
+    }
+  },
+	{
     request: {
       query: GET_CONTACT_LIST,
     },

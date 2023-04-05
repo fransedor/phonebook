@@ -25,7 +25,6 @@ const Pagination: React.FC<PaginationProps> = ({
     return pages;
   };
 
-	console.log(totalPages, currentPageIndex)
   return (
     <PaginationContainer>
       <IconButton disabled={currentPageIndex === 0} onClick={onBefore}>

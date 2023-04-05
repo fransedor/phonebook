@@ -79,6 +79,7 @@ function App() {
   const pageClickHandler = (pageNumber: number) => {
     setPageIndex(pageNumber - 1);
   };
+	
   return (
     <div className="App">
       {loading && <p>Loading...</p>}
