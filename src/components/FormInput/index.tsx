@@ -12,11 +12,12 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
   ({ name, label, onChange, pattern, patternMessage }, ref) => {
     return (
       <InputContainer>
-        {label && <label htmlFor={name}>{label}</label>}
+        {label && <label htmlFor={name} data-testid={`form-label-${name}`}>{label}</label>}
         <StyledInput
           type="text"
           id={name}
           name={name}
+					data-testid={`form-input-${name}`}
           onChange={onChange}
           ref={ref}
 					title={patternMessage}

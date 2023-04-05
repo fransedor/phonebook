@@ -19,7 +19,6 @@ function App() {
   const [contactList, setContactList] = useState<ContactListInterface[]>(
     localStorageContacts ? JSON.parse(localStorageContacts) : []
   );
-  const [openCreateContactDialog, setOpenCreateContactDialog] = useState(false);
 
   const renderFavoriteList = useCallback(() => {
     if (!searchValue) {

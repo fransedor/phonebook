@@ -1,5 +1,5 @@
 import React from "react";
-import Dialog, { DialogContent, DialogHeader } from "./index.styles";
+import Dialog, { DialogContent, DialogHeader, StyledButton, StyledForm } from "./index.styles";
 import {
   ContactListInterface,
   ContactListVariables,
@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { ApolloQueryResult, useMutation } from "@apollo/client";
 import { EDIT_CONTACT_BY_ID } from "../../services/edit";
 import { ADD_CONTACT_WITH_PHONES } from "../../services/create";
-import { client } from "../../main";
+import client from "../../services/client";
 
 interface CreateEditContactDialogProps {
   open: boolean;
@@ -26,7 +26,7 @@ const CreateEditContactDialog: React.FC<CreateEditContactDialogProps> = ({
   open,
   onClose,
   contact,
-	refetch,
+  refetch,
 }) => {
   const { register, handleSubmit, setError, reset } = useForm<ContactListInterface>({
     defaultValues: {
@@ -43,7 +43,7 @@ const CreateEditContactDialog: React.FC<CreateEditContactDialogProps> = ({
     const contacts = client.readQuery({ query: GET_CONTACT_LIST });
 
     if (
-      contacts!.contact.find(
+      contacts && contacts.contact.find(
         (contact) => contact.first_name === data.first_name && contact.last_name === data.last_name
       )
     ) {
@@ -77,30 +77,32 @@ const CreateEditContactDialog: React.FC<CreateEditContactDialogProps> = ({
     }
   };
   return (
-    <Dialog open={open} onClick={onClose}>
+    <Dialog open={open} onClick={onClose} data-testid="dialog">
       <DialogContent onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <h2>{contact ? "Edit" : "Create"} Contact</h2>
           <CloseIcon width={36} height={36} onClick={onClose} />
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormInput
-            {...register("first_name")}
-            pattern="^[a-zA-Z0-9]+$"
-            patternMessage="Alphanumeric only"
-            label="First Name"
-          />
-          <FormInput
-            {...register("last_name")}
-            pattern="^[a-zA-Z0-9]+$"
-            patternMessage="Alphanumeric only"
-            label="Last Name"
-          />
-          <FormInput {...register("phones.0.number")} label="Phone Number" />
-          <FormInput {...register("phones.1.number")} />
-          <FormInput {...register("phones.2.number")} />
-          <button type="submit">SAVE</button>
-        </form>
+        <StyledForm onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <FormInput
+              {...register("first_name")}
+              pattern="^[a-zA-Z0-9]+$"
+              patternMessage="Alphanumeric only"
+              label="First Name"
+            />
+            <FormInput
+              {...register("last_name")}
+              pattern="^[a-zA-Z0-9]+$"
+              patternMessage="Alphanumeric only"
+              label="Last Name"
+            />
+            <FormInput {...register("phones.0.number")} label="Phone Number" />
+            <FormInput {...register("phones.1.number")} />
+            <FormInput {...register("phones.2.number")} />
+          </div>
+          <StyledButton type="submit" data-testid="submit-form">Save</StyledButton>
+        </StyledForm>
       </DialogContent>
     </Dialog>
   );

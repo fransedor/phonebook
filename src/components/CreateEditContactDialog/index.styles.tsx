@@ -34,5 +34,26 @@ export const DialogHeader = styled.div`
 	align-items: center;
 	margin-bottom: 20px;
 `
+export const StyledForm = styled.form`
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 90%;
+`
 
+export const StyledButton = styled.button`
+	font-weight: bold;
+	border: 0;
+	border-radius: 8px;
+	padding: 8px 12px;
+	width: 100px;
+	margin-left: auto;
+	box-shadow: 1px 2px 5px #333;
+	background-color: #0291ee;
+	color: white;
+	&:hover {
+		cursor: pointer;
+		background-color: #50b6fa;
+	}
+`
 export default Dialog;

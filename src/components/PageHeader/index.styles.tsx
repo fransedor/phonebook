@@ -14,6 +14,10 @@ export const StyledAddButton = styled(AddIcon)`
   background-color: #0291ee;
 	padding: 4px;
 	border-radius: 100%;
+	&:hover {
+		cursor: pointer;
+		background-color: #50b6fa;
+	}
 `;
 
 export const InputContainer = styled.div`

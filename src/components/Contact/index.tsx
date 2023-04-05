@@ -13,7 +13,7 @@ import type {
 import CreateEditContactDialog from "../CreateEditContactDialog";
 import { ApolloQueryResult } from "@apollo/client";
 
-interface ContactProps {
+export interface ContactProps {
   contact: ContactDetailType & { phones: PhoneNumberType[] };
   onFavorite: (contact: ContactDetailType & { phones: PhoneNumberType[] }) => void;
   onEdit?: VoidFunction;
@@ -28,7 +28,7 @@ const Contact: React.FC<ContactProps> = ({ contact, onFavorite, isFavorite, refe
 
   return (
     <>
-      <ContactContainer>
+      <ContactContainer data-testid="contact-container">
         {/*<PersonIcon width={24} height={24} style={{ backgroundColor: "#444", padding: "2px", borderRadius: "100%", color: "white" }} />*/}
         <ContactInfo>
           <p>{`${contact.first_name} ${contact.last_name}`}</p>
@@ -41,13 +41,13 @@ const Contact: React.FC<ContactProps> = ({ contact, onFavorite, isFavorite, refe
           </div>
         </ContactInfo>
         <ContactActionContainer>
-          <EditIcon width={16} onClick={() => setOpenEditContactDialog(true)}/>
+          <EditIcon width={16} onClick={() => setOpenEditContactDialog(true)} data-testid="edit-contact"/>
           {isFavorite ? (
-            <HeartMinusIcon width={16} onClick={() => onFavorite(contact)} />
+            <HeartMinusIcon width={16} onClick={() => onFavorite(contact)} data-testid="unfav-contact"/>
           ) : (
-            <HeartPlusIcon width={16} onClick={() => onFavorite(contact)} />
+            <HeartPlusIcon width={16} onClick={() => onFavorite(contact)} data-testid="fav-contact"/>
           )}
-          <DeleteIcon width={16} onClick={() => onDelete(contact.id)}/>
+          <DeleteIcon width={16} onClick={() => onDelete(contact.id)} data-testid="delete-contact"/>
         </ContactActionContainer>
       </ContactContainer>
       <CreateEditContactDialog
