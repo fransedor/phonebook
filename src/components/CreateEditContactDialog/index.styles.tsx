@@ -15,6 +15,11 @@ const Dialog = styled.div`
 	}
 `
 
+export const StyledErrorMessage = styled.p`
+	font-size: 12px;
+	color: red;
+`
+
 export const DialogContent = styled.div`
 	background-color: white;
 	width: 600px;

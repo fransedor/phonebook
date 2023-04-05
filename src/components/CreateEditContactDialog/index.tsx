@@ -1,5 +1,11 @@
 import React from "react";
-import Dialog, { DialogContent, DialogHeader, StyledButton, StyledForm } from "./index.styles";
+import Dialog, {
+  DialogContent,
+  DialogHeader,
+  StyledButton,
+  StyledErrorMessage,
+  StyledForm,
+} from "./index.styles";
 import {
   ContactListInterface,
   ContactListVariables,
@@ -13,6 +19,8 @@ import { ApolloQueryResult, useMutation } from "@apollo/client";
 import { EDIT_CONTACT_BY_ID } from "../../services/edit";
 import { ADD_CONTACT_WITH_PHONES } from "../../services/create";
 import client from "../../services/client";
+import { ADD_NUMBER_TO_CONTACT } from "../../services/create";
+import { EDIT_PHONE_NUMBER } from "../../services/edit";
 
 interface CreateEditContactDialogProps {
   open: boolean;
@@ -28,7 +36,13 @@ const CreateEditContactDialog: React.FC<CreateEditContactDialogProps> = ({
   contact,
   refetch,
 }) => {
-  const { register, handleSubmit, setError, reset } = useForm<ContactListInterface>({
+  const {
+    register,
+    handleSubmit,
+    setError,
+    reset,
+    formState: { errors },
+  } = useForm<ContactListInterface>({
     defaultValues: {
       first_name: contact?.first_name || "",
       last_name: contact?.last_name || "",
@@ -38,12 +52,17 @@ const CreateEditContactDialog: React.FC<CreateEditContactDialogProps> = ({
 
   const [editContactById] = useMutation(EDIT_CONTACT_BY_ID);
   const [addContactWithPhones] = useMutation(ADD_CONTACT_WITH_PHONES);
+  const [addNumberToContact] = useMutation(ADD_NUMBER_TO_CONTACT);
+  const [editPhoneNumber] = useMutation(EDIT_PHONE_NUMBER);
 
   const onSubmit = async (data: ContactListInterface) => {
     const contacts = client.readQuery({ query: GET_CONTACT_LIST });
 
+    // Check if user add contact with not unique name
     if (
-      contacts && contacts.contact.find(
+      contacts &&
+      !contact &&
+      contacts.contact.find(
         (contact) => contact.first_name === data.first_name && contact.last_name === data.last_name
       )
     ) {
@@ -61,7 +80,35 @@ const CreateEditContactDialog: React.FC<CreateEditContactDialogProps> = ({
             },
           },
           onCompleted: () => refetch(),
+          onError: (error) => console.log(error),
         });
+				data.phones.forEach((phone, i) => {
+					// Check if there is existing number
+					if (contact.phones[i]) {
+						// Check if number is different
+						if (contact.phones[i].number !== phone.number) {
+							editPhoneNumber({
+								variables: {
+									pk_columns: {
+										contact_id: contact.id,
+										number: contact.phones[i].number
+									},
+									new_phone_number: phone.number
+								},
+								onCompleted: () => refetch()
+							})
+						}
+					} else {
+						// Add new phone number
+						addNumberToContact({
+							variables: {
+								contact_id: contact.id,
+								phone_number: phone.number
+							},
+							onCompleted: () => refetch()
+						})
+					}
+				})
       } else {
         addContactWithPhones({
           variables: {
@@ -71,8 +118,8 @@ const CreateEditContactDialog: React.FC<CreateEditContactDialogProps> = ({
           },
           onCompleted: () => refetch(),
         });
+				reset();
       }
-      reset();
       onClose();
     }
   };
@@ -91,17 +138,39 @@ const CreateEditContactDialog: React.FC<CreateEditContactDialogProps> = ({
               patternMessage="Alphanumeric only"
               label="First Name"
             />
+            {errors.first_name && (
+              <StyledErrorMessage>{errors.first_name.message}</StyledErrorMessage>
+            )}
             <FormInput
               {...register("last_name")}
               pattern="^[a-zA-Z0-9]+$"
               patternMessage="Alphanumeric only"
               label="Last Name"
             />
-            <FormInput {...register("phones.0.number")} label="Phone Number" />
-            <FormInput {...register("phones.1.number")} />
-            <FormInput {...register("phones.2.number")} />
+            {errors.last_name && (
+              <StyledErrorMessage>{errors.last_name.message}</StyledErrorMessage>
+            )}
+            <FormInput
+              {...register("phones.0.number", { required: true })}
+              label="Phone Number"
+              pattern="^^(?:[+\d].*\d|\d)$"
+              patternMessage="Number only"
+            />
+            {errors.phones && <StyledErrorMessage>Insert phone number</StyledErrorMessage>}
+            <FormInput
+              {...register("phones.1.number")}
+              pattern="^^(?:[+\d].*\d|\d)$"
+              patternMessage="Number only"
+            />
+            <FormInput
+              {...register("phones.2.number")}
+              pattern="^^(?:[+\d].*\d|\d)$"
+              patternMessage="Number only"
+            />
           </div>
-          <StyledButton type="submit" data-testid="submit-form">Save</StyledButton>
+          <StyledButton type="submit" data-testid="submit-form">
+            Save
+          </StyledButton>
         </StyledForm>
       </DialogContent>
     </Dialog>
